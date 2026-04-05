@@ -23,7 +23,13 @@ export default defineConfig({
   site: 'https://nanasi.github.io',
   integrations: [mdx(), react(), sitemap(), icon()],
   vite: {
+  vite: {
+    // @ts-ignore
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      exclude: ['@resvg/resvg-js'],
+    },
+  },
   },
   server: {
     port: 1234,
