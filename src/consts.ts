@@ -16,7 +16,7 @@ export type Link = {
 export const SITE: Site = {
   title: 'Nanasi',
   description: 'CTF Write-ups, Reverse Engineering, and life.',
-  href: 'https://nanasi.github.io',
+  href: 'https://nanasi0807.github.io',
   locale: 'en-US',
   author: 'Nanasi',
   featuredPostCount: 3,
