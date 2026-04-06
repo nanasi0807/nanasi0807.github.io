@@ -40,6 +40,7 @@ export const SOCIAL_LINKS: Link[] = [
 export const ICON_MAP: Record<string, string> = {
   github: 'lucide:github',
   Github: 'lucide:github',
+  GitHub: 'lucide:github',
   twitter: 'lucide:twitter',
   Twitter: 'lucide:twitter',
   email: 'lucide:mail',
