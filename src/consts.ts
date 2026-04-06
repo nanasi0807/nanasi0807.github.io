@@ -41,5 +41,6 @@ export const ICON_MAP: Record<string, string> = {
   github: 'lucide:github',
   twitter: 'lucide:twitter',
   email: 'lucide:mail',
+  mail: 'lucide:mail',
   rss: 'lucide:rss',
 };
