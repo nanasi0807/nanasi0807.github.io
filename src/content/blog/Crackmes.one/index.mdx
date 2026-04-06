@@ -1,0 +1,1264 @@
+---
+title: 'Crackmes.one's Challenge - BluePrint'
+description: 'A descriptive writeup on BluePrint challenge from ClownCS.'
+date: 2025/05/15
+tags: ['writeup', 'reverse']
+image: './crackmes-logo'
+authors: ['n4n4s1']
+---
+
+# WannaGame CyberKnight
+## BLUEPRINT:
+
+
+Đề cho ta 1 file `blueprint.exe` và 1 file `user.json.enc`
+
+Vì không cẩn thận nên mình đã double click lên file .exe đó ngay tại laptop của mình => Kết quả là BSOD xuất hiện (màn hình xanh chết chóc). Đây cũng là lí do vì sao mình chọn chall này làm (vì nó trông khá giống malware), trong quá trình làm bài mình đã hỏi ChatGPT, Claude, stalk github người khác về những câu tương tự, xem những cuộc trò chuyện trên forum cũ như `Tuts4You` hay là `https://www.hvaonline.net/` để hiểu thêm về kĩ thuật được sử dụng trong bài này, ngoài ra mình cũng đã cố gắng hỏi anh little timmy và anh ấy chỉ cho mình 1 số trang web để mình tự `research`, ngoài ra anh còn đưa ra 1 suggest cực kì hữu ích cho mình (dù ban đầu mình đọc chả hiểu cm gì cả).
+![image](https://hackmd.io/_uploads/Skhh5yMZlg.png)
+
+
+Tổng quan thì challenge cho 1 file thực thi `.exe`, load vào bất kì trình disassembler (IDA Pro, Ghidra, Binja,...) cũng cho ta thấy đây là 1 chương trình bị `obfuscated`. Không có `strings` nào thực sự hữu ích có thể nhìn  dc liền để đoán ra `flow` của chương trình. Check hàm `main` cũng cho thấy code bị làm rối khá nhiều và không có `flow` thực sự rõ ràng ngay lập tức. Đặc biệt liên quan tới kĩ thuật chính của bài này thì không có cái gọi `hàm API` hay `strings` nào có thể cung cấp manh mối tốt về việc chương trình đang làm gì.
+
+Hàm main được `IDA` đưa ra bên dưới: 
+
+<details open>
+    <summary>Main:</summary>
+
+```C
+int __fastcall main(int argc, const char **argv, const char **envp)
+{
+  __int64 v4; // r12
+  __int64 v5; // r13
+  __int64 v6; // rax
+  _BYTE *v7; // r15
+  _BYTE *v8; // rsi
+  _QWORD *v9; // rcx
+  struct _LIST_ENTRY *i; // rax
+  struct _LIST_ENTRY *Flink; // r10
+  struct _LIST_ENTRY *v12; // rdi
+  __int64 v13; // r9
+  char *v14; // rdx
+  int v15; // r8d
+  char v16; // cl
+  char *v17; // rdx
+  struct _LIST_ENTRY *v18; // rcx
+  FILE *v19; // rsi
+  struct _LIST_ENTRY *v22; // rax
+  struct _LIST_ENTRY *v23; // r11
+  struct _LIST_ENTRY *v24; // rdi
+  __int64 v25; // r9
+  char *v26; // rcx
+  int v27; // r8d
+  char v28; // dl
+  char *v29; // rcx
+  _BYTE *v30; // rsi
+  size_t v31; // rsi
+  void *v32; // rax
+  void *v33; // rcx
+  _QWORD *v34; // rax
+  char *v35; // rbx
+  __int64 v36; // rax
+  _BYTE *v37; // rdi
+  _QWORD *v38; // rcx
+  FILE *v39; // r14
+  struct _LIST_ENTRY *v42; // rax
+  struct _LIST_ENTRY *v43; // r11
+  struct _LIST_ENTRY *v44; // rdi
+  __int64 v45; // r9
+  char *v46; // rdx
+  int v47; // r8d
+  char v48; // cl
+  char *v49; // rdx
+  size_t v50; // rdi
+  void *v51; // rax
+  void *v52; // rcx
+  _QWORD *v53; // rax
+  char *v54; // rbx
+  _BYTE *v55; // rax
+  _BYTE *v56; // rax
+  __int64 v58[4]; // [rsp+40h] [rbp+0h] BYREF
+
+  _RBP = (unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64;
+  *(_OWORD *)(_RBP + 104) = 0i64;
+  v4 = 0i64;
+  *(_QWORD *)(_RBP + 120) = 0i64;
+  *(_OWORD *)(_RBP + 128) = 0i64;
+  sub_1400016A0(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 128, argv, envp);
+  *(_OWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x50) = 0i64;
+  v5 = 0i64;
+  *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x60) = 0i64;
+  *(_QWORD *)_RBP = 0x60B7F02F67E80D38i64;
+  *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x40) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+  *(_QWORD *)_RBP = 0x66A934904CD0C7C8i64;
+  *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x48) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+  *(_QWORD *)_RBP = 0xFC49A01158D7E4Di64;
+  *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA0) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+  *(_QWORD *)_RBP = 0x66A934904CD0C7A6i64;
+  *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA8) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+  *(__m128 *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x40) = _mm_xor_ps(
+                                                                           (__m128)_mm_load_si128((const __m128i *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 64)),
+                                                                           *(__m128 *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64)
+                                                                                     + 0xA0));
+  v6 = sub_1400052D0(_RBP + 32, _RBP + 64);
+  if ( ((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 104 == v6 )
+  {
+    v8 = *(_BYTE **)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x70);
+    v7 = *(_BYTE **)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x68);
+  }
+  else
+  {
+    v7 = *(_BYTE **)v6;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x68) = *(_QWORD *)v6;
+    v8 = *(_BYTE **)(v6 + 8);
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x70) = v8;
+    v4 = *(_QWORD *)(v6 + 16);
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x78) = v4;
+    *(_QWORD *)v6 = 0i64;
+    *(_QWORD *)(v6 + 8) = 0i64;
+    *(_QWORD *)(v6 + 16) = 0i64;
+  }
+  v9 = *(_QWORD **)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x20);
+  if ( v9 )
+  {
+    if ( *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x30) - (_QWORD)v9 >= 0x1000ui64 )
+    {
+      v9 = (_QWORD *)*(v9 - 1);
+      if ( (unsigned __int64)(*(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x20) - (_QWORD)v9 - 8i64) > 0x1F )
+        invalid_parameter_noinfo_noreturn();
+    }
+    j_j_free(v9);
+    *(_OWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x20) = 0i64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x30) = 0i64;
+  }
+  for ( i = NtCurrentPeb()->Ldr->InLoadOrderModuleList.Flink; ; i = i->Flink )
+  {
+    Flink = i[3].Flink;
+    v12 = (struct _LIST_ENTRY *)((char *)Flink + *(unsigned int *)((char *)&Flink[8].Blink + SHIDWORD(Flink[3].Blink)));
+    if ( v12 != Flink )
+    {
+      LODWORD(v13) = v12[1].Blink;
+      if ( (_DWORD)v13 )
+        break;
+    }
+LABEL_16:
+    ;
+  }
+  while ( 1 )
+  {
+    v13 = (unsigned int)(v13 - 1);
+    v14 = (char *)Flink + *(unsigned int *)((char *)&Flink->Flink + 4 * v13 + LODWORD(v12[2].Flink));
+    v15 = -913135182;
+    v16 = *v14;
+    v17 = v14 + 1;
+    if ( v16 )
+    {
+      do
+      {
+        v15 = 16777619 * (v15 ^ v16);
+        v16 = *v17++;
+      }
+      while ( v16 );
+      if ( v15 == -2119732292 )
+        break;
+    }
+    if ( !(_DWORD)v13 )
+      goto LABEL_16;
+  }
+  v18 = (struct _LIST_ENTRY *)((char *)Flink
+                             + *(unsigned int *)((char *)&Flink->Flink
+                                               + 4
+                                               * *(unsigned __int16 *)((char *)&Flink->Flink
+                                                                     + 2 * v13
+                                                                     + HIDWORD(v12[2].Flink))
+                                               + HIDWORD(v12[1].Blink)));
+  if ( ((__int64 (__fastcall *)(struct _LIST_ENTRY *, char *))v18)(v18, v17) )
+    sub_140002BA0();
+  if ( v7 == v8 )
+  {
+    v19 = _acrt_iob_func(1u);
+    *(_QWORD *)_RBP = 0x2FB7F32170E1170Bi64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x20) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0x14C614E938A0AAC3i64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x28) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0xA9FFDF1B8C9E65A7ui64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x30) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0x8C69E9C23F599708ui64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x38) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0xFC49A01158D7E4Di64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA0) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0x66A934904CD0C7A6i64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA8) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0xCE91B67FEDFB1787ui64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xB0) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0x8C0D8CAE5638F128ui64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xB8) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    __asm
+    {
+      vmovdqu ymm0, ymmword ptr [rbp+0F0h+Block]
+      vpxor   ymm1, ymm0, [rbp+0F0h+var_50]
+      vmovdqa ymmword ptr [rbp+0F0h+Block], ymm1
+    }
+    v22 = NtCurrentPeb()->Ldr->InLoadOrderModuleList.Flink;
+    __asm { vzeroupper }
+    while ( 1 )
+    {
+      v23 = v22[3].Flink;
+      v24 = (struct _LIST_ENTRY *)((char *)v23 + *(unsigned int *)((char *)&v23[8].Blink + SHIDWORD(v23[3].Blink)));
+      if ( v24 != v23 )
+      {
+        LODWORD(v25) = v24[1].Blink;
+        if ( (_DWORD)v25 )
+          break;
+      }
+LABEL_27:
+      v22 = v22->Flink;
+    }
+    while ( 1 )
+    {
+      v25 = (unsigned int)(v25 - 1);
+      v26 = (char *)v23 + *(unsigned int *)((char *)&v23->Flink + 4 * v25 + LODWORD(v24[2].Flink));
+      v27 = 1855580234;
+      v28 = *v26;
+      v29 = v26 + 1;
+      if ( v28 )
+      {
+        do
+        {
+          v27 = 16777619 * (v27 ^ v28);
+          v28 = *v29++;
+        }
+        while ( v28 );
+        if ( v27 == 1566996403 )
+          break;
+      }
+      if ( !(_DWORD)v25 )
+        goto LABEL_27;
+    }
+    ((void (__fastcall *)(unsigned __int64, __int64, __int64, FILE *))((char *)v23
+                                                                     + *(unsigned int *)((char *)&v23->Flink
+                                                                                       + 4
+                                                                                       * *(unsigned __int16 *)((char *)&v23->Flink + 2 * v25 + HIDWORD(v24[2].Flink))
+                                                                                       + HIDWORD(v24[1].Blink))))(
+      _RBP + 32,
+      1i64,
+      32i64,
+      v19);
+    v30 = *(_BYTE **)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x50);
+    goto LABEL_65;
+  }
+  *(_OWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA0) = 0i64;
+  *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xB0) = 0i64;
+  v31 = v8 - v7;
+  if ( v31 )
+  {
+    if ( v31 > 0x7FFFFFFFFFFFFFFFi64 )
+      sub_1400064E0();
+    if ( v31 < 0x1000 )
+    {
+      v34 = operator new(v31);
+    }
+    else
+    {
+      if ( v31 + 39 <= v31 )
+        sub_140001190();
+      v32 = operator new(v31 + 39);
+      v33 = v32;
+      if ( !v32 )
+LABEL_43:
+        invalid_parameter_noinfo_noreturn();
+      v34 = (_QWORD *)(((unsigned __int64)v32 + 39) & 0xFFFFFFFFFFFFFFE0ui64);
+      *(v34 - 1) = v33;
+    }
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA0) = v34;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA8) = v34;
+    v35 = (char *)v34 + v31;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xB0) = (char *)v34 + v31;
+    memmove(v34, v7, v31);
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA8) = v35;
+  }
+  v36 = sub_140001950(_RBP + 128, _RBP + 32, _RBP + 160);
+  if ( _RBP + 80 == v36 )
+  {
+    v37 = *(_BYTE **)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x58);
+    v30 = *(_BYTE **)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x50);
+  }
+  else
+  {
+    v30 = *(_BYTE **)v36;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x50) = *(_QWORD *)v36;
+    v37 = *(_BYTE **)(v36 + 8);
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x58) = v37;
+    v5 = *(_QWORD *)(v36 + 16);
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x60) = v5;
+    *(_QWORD *)v36 = 0i64;
+    *(_QWORD *)(v36 + 8) = 0i64;
+    *(_QWORD *)(v36 + 16) = 0i64;
+  }
+  v38 = *(_QWORD **)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x20);
+  if ( v38 )
+  {
+    if ( *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x30) - (_QWORD)v38 >= 0x1000ui64 )
+    {
+      v38 = (_QWORD *)*(v38 - 1);
+      if ( (unsigned __int64)(*(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x20) - (_QWORD)v38 - 8i64) > 0x1F )
+        goto LABEL_43;
+    }
+    j_j_free(v38);
+    *(_OWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x20) = 0i64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x30) = 0i64;
+  }
+  if ( v30 == v37 )
+  {
+    v39 = _acrt_iob_func(1u);
+    *(_QWORD *)_RBP = 0x66B0EA7867EE1008i64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x20) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0x3C55DF12AF0A9C9i64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x28) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0xCE91B67FEDFB17E3ui64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x30) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0x8C0D8CAE5638F128ui64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x38) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0xFC49A01158D7E4Di64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA0) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0x66A934904CD0C7A6i64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA8) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0xCE91B67FEDFB1787ui64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xB0) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0x8C0D8CAE5638F128ui64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xB8) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    __asm
+    {
+      vmovdqu ymm0, ymmword ptr [rbp+0F0h+Block]
+      vpxor   ymm1, ymm0, [rbp+0F0h+var_50]
+      vmovdqa ymmword ptr [rbp+0F0h+Block], ymm1
+    }
+    v42 = NtCurrentPeb()->Ldr->InLoadOrderModuleList.Flink;
+    __asm { vzeroupper }
+    while ( 1 )
+    {
+      v43 = v42[3].Flink;
+      v44 = (struct _LIST_ENTRY *)((char *)v43 + *(unsigned int *)((char *)&v43[8].Blink + SHIDWORD(v43[3].Blink)));
+      if ( v44 != v43 )
+      {
+        LODWORD(v45) = v44[1].Blink;
+        if ( (_DWORD)v45 )
+          break;
+      }
+LABEL_53:
+      v42 = v42->Flink;
+    }
+    while ( 1 )
+    {
+      v45 = (unsigned int)(v45 - 1);
+      v46 = (char *)v43 + *(unsigned int *)((char *)&v43->Flink + 4 * v45 + LODWORD(v44[2].Flink));
+      v47 = 408384500;
+      v48 = *v46;
+      v49 = v46 + 1;
+      if ( v48 )
+      {
+        do
+        {
+          v47 = 16777619 * (v47 ^ v48);
+          v48 = *v49++;
+        }
+        while ( v48 );
+        if ( v47 == -2053918735 )
+          break;
+      }
+      if ( !(_DWORD)v45 )
+        goto LABEL_53;
+    }
+    ((void (__fastcall *)(unsigned __int64, __int64, __int64, FILE *))((char *)v43
+                                                                     + *(unsigned int *)((char *)&v43->Flink
+                                                                                       + 4
+                                                                                       * *(unsigned __int16 *)((char *)&v43->Flink + 2 * v45 + HIDWORD(v44[2].Flink))
+                                                                                       + HIDWORD(v44[1].Blink))))(
+      _RBP + 32,
+      1i64,
+      18i64,
+      v39);
+  }
+  else
+  {
+    sub_140002FF0();
+    *(_OWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x20) = 0i64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x30) = 0i64;
+    v50 = v37 - v30;
+    if ( v50 )
+    {
+      if ( v50 > 0x7FFFFFFFFFFFFFFFi64 )
+        sub_1400064E0();
+      if ( v50 < 0x1000 )
+      {
+        v53 = operator new(v50);
+      }
+      else
+      {
+        if ( v50 + 39 <= v50 )
+          sub_140001190();
+        v51 = operator new(v50 + 39);
+        v52 = v51;
+        if ( !v51 )
+          invalid_parameter_noinfo_noreturn();
+        v53 = (_QWORD *)(((unsigned __int64)v51 + 39) & 0xFFFFFFFFFFFFFFE0ui64);
+        *(v53 - 1) = v52;
+      }
+      *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x20) = v53;
+      *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x28) = v53;
+      v54 = (char *)v53 + v50;
+      *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x30) = (char *)v53 + v50;
+      memmove(v53, v30, v50);
+      *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x28) = v54;
+    }
+    *(_QWORD *)_RBP = 0x60B7F02F67E80D38i64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x40) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0x66A934F322B5E9C8i64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x48) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0xFC49A01158D7E4Di64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA0) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(_QWORD *)_RBP = 0x66A934904CD0C7A6i64;
+    *(_QWORD *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0xA8) = *(_QWORD *)((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64);
+    *(__m128 *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64) + 0x40) = _mm_xor_ps(
+                                                                             (__m128)_mm_load_si128((const __m128i *)(_RBP + 160)),
+                                                                             *(__m128 *)(((unsigned __int64)v58 & 0xFFFFFFFFFFFFFFE0ui64)
+                                                                                       + 0x40));
+    sub_140005670(_RBP + 64, _RBP + 32);
+  }
+LABEL_65:
+  if ( v30 )
+  {
+    v55 = v30;
+    if ( (unsigned __int64)(v5 - (_QWORD)v30) >= 0x1000 )
+    {
+      v30 = (_BYTE *)*((_QWORD *)v30 - 1);
+      if ( (unsigned __int64)(v55 - v30 - 8) > 0x1F )
+        invalid_parameter_noinfo_noreturn();
+    }
+    j_j_free(v30);
+  }
+  if ( v7 )
+  {
+    v56 = v7;
+    if ( (unsigned __int64)(v4 - (_QWORD)v7) >= 0x1000 )
+    {
+      v7 = (_BYTE *)*((_QWORD *)v7 - 1);
+      if ( (unsigned __int64)(v56 - v7 - 8) > 0x1F )
+        invalid_parameter_noinfo_noreturn();
+    }
+    j_j_free(v7);
+  }
+  return 0;
+}
+```
+</details>
+
+Bài này mình sẽ dùng `Binary Ninja` là chủ yếu, lí do là vì hệ thống `Intermediate Language` của nó + GUI hiện đại, dễ dùng hơn IDA/Ghidra với mình thì cảm giác như đang sử dụng `VSCode`. 
+
+Ok bắt đầu mò sâu hơn vô trong hàm  thì ta tìm thấy những `số random` xuất hiện rất nhiều. Cái này này lặp lại rất ở nhiều nơi trong chương trình. Mình sẽ trích ra 1 đoạn:
+
+```c
+...
+140005a24        __builtin_memset(&s_1, 0, 0x18);
+140005a29        int64_t r13 = 0;
+140005a42        int64_t var_c0 = 0x60b7f02f67e80d38;
+140005a58        int64_t var_b8 = 0x66a934904cd0c7c8;
+140005a6e        void* const s_3 = 0xfc49a01158d7e4d;
+140005a87        int64_t var_58 = 0x66a934904cd0c7a6;
+140005a9a        var_c0 ^= s_3;
+140005aa7        void* s;
+140005aa7        int64_t* s_4 = sub_1400052d0(&s, &var_c0);
+...
+```
+
+### String "user.jso":
+
+Sau khi tìm ra đoạn code trên thì mình sẽ kiểm tra phép toán `XOR` giữa các số này và nó thực sự trả về cho mình 1 chuỗi có thể đọc được.
+
+Dùng Python theo lệnh sau: 
+
+```py
+>>> (0x60b7f02f67e80d38^0xfc49a01158d7e4d).to_bytes(8, "little")
+b'user.jso'
+>>> (0x66a934904cd0c7c8^0x66a934904cd0c7a6).to_bytes(8, "little")
+b'n\x00\x00\x00\x00\x00\x00\x00'
+```
+
++ `8`: là length hay số byte ta muốn tạo ra.
++ `little`: là thứ tự byte xuất hiện, ở đây sẽ là ít nhất ở trước. 
+
+
+Không hiểu vì sao `user.json` lại bị mất chữ `n` ở cuối, nhưng điều đó không quan trọng, ta đã xác định được nó chính là file gốc bị mã hóa rồi. Chuỗi `user.json` được truyền vào hàm `sub_1400052d0` như là 1 tham số thứ hai. Mở hàm này lên xem thử nó làm cái gì? Và ngay từ đầu hàm lại xuất hiện `obfuscated`...
+
+### String "rb":
+
+![image](https://hackmd.io/_uploads/BJaPEgGbge.png)
+
+Thực hiện `XOR` như trên: 
+```py
+>>> (0xfc49a01158d1c3f^0xfc49a01158d7e4d).to_bytes(8, "little")
+b'rb\x00\x00\x00\x00\x00\x00'
+```
+
+Kết quả là chuỗi `rb`: nghĩa là đọc file ở dạng nhị phân (read binary).
+
+Cùng suy luận 1 chút: 
++ Chuỗi `user.json` được khôi phục từ XOR => là tên file.
++ Chuỗi `rb` cũng được khôi phục từ XOR => là mode mở file.
++ Hai giá trị đó lần lượt được truyền vào hàm `sub_1400052d0`.
+
+=> hàm `sub_1400052d0` có thể đang làm việc kiểu: 
+
+```
+FILE *f = fopen("user.json", "rb");
+```
+
+Nhờ tra GPT mà mình biết `rb` lại còn là tham số điển hình khi dùng [fopen](https://cplusplus.com/reference/cstdio/fopen/) trong C/C++ nữa. 
+
+### Pattern quan trọng để thu thập `_IMAGE_EXPORT_DIRECTORY`:
+
+Tiếp tục với hàm `sub_1400052d0`, ta thấy một pattern quen thuộc lại xuất hiện – và pattern này lặp đi lặp lại ở nhiều nơi trong toàn bộ chương trình.
+
+
+
+![image](https://hackmd.io/_uploads/ByuT4lfbee.png)
+
+
+#### PEB và LDR_DATA_TABLE_ENTRY
+
+Tổng quan thì lúc này thì chương trình duyệt qua danh sách các `module` đã load của tiến trình hiện tại. Để làm đc điều này thì nó cần truy cập vô `Process Environment Block` (PEB). Mình thực sự không hề có khái niệm về PEB cho tới khi làm bài này, mình đã bỏ phần lớn thời gian chall này chỉ để đi đọc + hỏi ChatGPT/Claude rất rất nhiều về [nó](https://learn.microsoft.com/en-us/windows/win32/api/winternl/ns-winternl-peb). 
+
+
+Thông tin về các `module` được chứa trong vùng `loader data`, dưới dạng một `linked list` gồm các dạng kiểu [LDR_DATA_TABLE_ENTRY](https://github.com/conix-security/zer0m0n/blob/master/src/driver/include/nt/structures/LDR_DATA_TABLE_ENTRY.h). 
+
+Ta nên chỉnh lại code 1 chút, vì khi disassembler (như Binary Ninja, IDA, hay Ghidra) phân tích code, nó không biết những vùng nhớ như `rbx_2`, `rdx_1`, `r10_1` đại diện cho cái gì. Chúng chỉ là thanh ghi hoặc con trỏ trong suy nghĩ của tools thôi.
+
+
++ Nên là mình định nghĩa struct mới trong Binary Ninja cho `_LDR_DATA_TABLE_ENTRY`, rồi gán kiểu của `Flink` thành `_LDR_DATA_TABLE_ENTRY*`. 
+Đoạn này mình đang đề cập tới `doubly linked list` trong Windows. Trong danh sách liên kết đôi (doubly linked list), mỗi node (mỗi phần tử trong danh sách) sẽ có hai con trỏ:
+
+    + Flink: Trỏ đến node tiếp theo trong danh sách.
+
+    + Blink: Trỏ đến node trước đó trong danh sách.
+
+Cấu trúc này cho phép ta dễ dàng di chuyển qua lại giữa các node trong list, vì ta có thể duyệt cả về phía trước lẫn phía sau. Tạo điều kiện thuận lợi cho việc thao tác với các module đã được tải trong bộ nhớ của hệ điều hành.
+
+Nếu bạn dùng disassembler khác thì có thể bạn sẽ cần chỉnh, nhưng Binja thì khá 'thông minh' trong khoản này, nó có thể tự động phân tích và gán tên biến, kiểu dữ liệu, thậm chí là cả struct cho các thành phần thường thấy trong Windows. (Thật ra mình không dùng Binja ngay lúc đầu mà vô tình chọn phải, còn vì sao mình biết điều trên á? Vì mình đã tìm được cái [này](https://apps.dtic.mil/sti/pdfs/AD1126216.pdf) trong discord của W1, đây là report về các tool RE thường được sử dụng, nếu rảnh thì đọc nó cũng 0 phải ý tồi.)
+![image](https://hackmd.io/_uploads/S1MhSgfbge.png)
+
+
++  Khi phân tích một `DLL` trên hệ thống Windows, đầu tiên ta sẽ thấy rằng nó bắt đầu với một `_IMAGE_DOS_HEADER`, đây là header đầu tiên của file PE. Tiếp theo, chương trình sẽ đọc vào `_IMAGE_NT_HEADERS64` với một offset là `0x88`. Offset này chỉ tới phần `data dictionary` trong `IMAGE_OPTIONAL_HEADER64`, nơi chứa thông tin về các mục export của `DLL`. Cụ thể, đây là cấu trúc `_IMAGE_EXPORT_DIRECTORY`, nơi chứa các thông tin quan trọng như danh sách các tên hàm được export, địa chỉ của các hàm đó, và các chỉ mục của chúng.
+
+Mục tiêu chính của mình trong đoạn này là truy cập vào thông tin trong `_IMAGE_EXPORT_DIRECTORY` thông qua `Export Table`. Khi có được các dữ liệu này, ta  sẽ biết `DLL` xuất những hàm gì, và sau đó có thể gọi các hàm đó từ các chương trình khác.
+
+Thay đổi kiểu dữ liệu của một vài biến sẽ cho kết quả dễ đọc và rõ ràng hơn so với trước. Đôi khi các tools như trên không thể tự động nhận diện tất cả các kiểu dữ liệu đúng đc, và ta cần định nghĩa lại kiểu dữ liệu của các biến sao cho make sense hơn. Nhờ làm cnay mà giúp tools hiểu đúng các data structures, từ đó làm cho output trở nên dễ đọc + hiểu hơn. 
+
+
+![image](https://hackmd.io/_uploads/rJETBgzbxx.png)
+
+
+
+#### Dllbase:
+
+
+Xét code trên, ta thấy dòng này: 
+![image](https://hackmd.io/_uploads/Bk2prxMZle.png)
+  + `Flink` như đã nói ở trên là một con trỏ trong danh sách các module đang tải (trong `LDR_DATA_TABLE_ENTRY`), mỗi module được quản lý trong linked list. 
+  + `0x30` là offset để lấy `DllBase`, tức là địa chỉ bộ nhớ nơi DLL được tải vào. Vậy, `r10_1` chính là địa chỉ bắt đầu của DLL (DllBase).
+=> Ta rename `r10_1` thành `DllBase`
+
+
+Code đã được rename: 
+
+```C
+...
+14000538a        struct _LDR_DATA_TABLE_ENTRY* Flink =
+14000538a            gsbase->ProcessEnvironmentBlock->Ldr->InLoadOrderModuleList.Flink;
+14000538a        
+140005390        while (true)
+140005390        {
+140005390            struct _IMAGE_DOS_HEADER* DllBase = Flink->DllBase;
+1400053a0            struct _IMAGE_EXPORT_DIRECTORY* rbx_2 =
+1400053a0                (uint64_t)*(uint32_t*)((int64_t)DllBase->e_lfanew + DllBase + 0x88)
+1400053a0                + DllBase;
+1400053a0            
+1400053a6            if (rbx_2 != DllBase)
+1400053a6            {
+...
+```
+
+### Fields quan trọng trong _IMAGE_EXPORT_DIRECTORY:
+
+Trước khi tiếp tục thì mình đã đọc thêm về `_IMAGE_EXPORT_DIRECTORY`. Tổng quan nó là một cấu trúc trong Windows PE, được sử dụng để lưu trữ thông tin về các hàm và dữ liệu mà DLL xuất (export). Một số trường trong cấu trúc này bao gồm thông tin về địa chỉ các tên hàm, địa chỉ các hàm thực tế, số lượng hàm xuất,...
+
+Các trường chính trong `_IMAGE_EXPORT_DIRECTORY`:
++ `NumberOfNames (tại offset 0x18)`: Đây là số lượng tên hàm mà DLL xuất.
+
+Ví dụ, nếu một DLL xuất 10 hàm, thì giá trị của trường này sẽ là 10.
+
++ `AddressOfNames`: Là địa chỉ tới một danh sách các con trỏ, mỗi con trỏ trỏ tới tên của một hàm xuất.
+
+Cùng đi tiếp tới đoạn code tiếp theo: 
+
+```C
+1400053a8                uint64_t r9_1 = (uint64_t)*(uint32_t*)((char*)rbx_2 + 0x18);
+1400053a8                
+1400053af                while (r9_1)
+1400053af                {
+1400053c0                    r9_1 = (uint64_t)(r9_1 - 1);
+1400053cb                    void* rdx_1 = (uint64_t)*(uint32_t*)(
+1400053cb                        (uint64_t)*(uint32_t*)((char*)rbx_2 + 0x20) + (r9_1 << 2) + r10_1)
+1400053cb                        + r10_1;
+```
+
+![image](https://hackmd.io/_uploads/BJEyUlG-lx.png)
++ `(char*)rbx_2 + 0x18`: Di chuyển con trỏ `rbx_2` tới offset `0x18` (tức là trường `NumberOfNames` trong `_IMAGE_EXPORT_DIRECTORY`).
++ ``*(uint32_t*)((char*)rbx_2 + 0x18)``: Lấy giá trị tại địa chỉ đó, chính là số lượng hàm xuất (NumberOfNames).
++ `uint64_t r9_1`: Lưu giá trị này vào biến `r9_1`, tức là số lượng các hàm xuất trong DLL.
+=> `r9_1` được dùng để lưu số lượng các hàm xuất mà DLL cung cấp. Thế nên là rename biến này thành `NumberOfNames` cho dễ đọc 
+
+Thế `AdressOfNames` thì sao? Nếu `NumberOfNames` = 5, thì tại địa chỉ tương ứng với `AddressOfNames`, ta sẽ có 5 con trỏ 4 byte (tức 5 địa chỉ) .
+
+![image](https://hackmd.io/_uploads/H14lUxG-xe.png)
+
+Ở đây `rbx_2` được hiểu đơn thuần là một con trỏ kiểu void* hoặc char*, và đang dc truy cập như một `block memory` thô v (``+ 0x20`).
+
+Nhưng offset `0x20` trong `_IMAGE_EXPORT_DIRECTORY` chính là `AddressOfNames`.
+
+Vì sao thì nó theo định nghĩa chuẩn của `_IMAGE_EXPORT_DIRECTORY` theo Microsoft thôi. 
+
+```
+typedef struct _IMAGE_EXPORT_DIRECTORY {
+    DWORD Characteristics;         // 0x00
+    DWORD TimeDateStamp;           // 0x04
+    WORD  MajorVersion;            // 0x08
+    WORD  MinorVersion;            // 0x0A
+    DWORD Name;                    // 0x0C
+    DWORD Base;                    // 0x10
+    DWORD NumberOfFunctions;       // 0x14
+    DWORD NumberOfNames;           // 0x18 => nhìn zô đây
+    DWORD AddressOfFunctions;      // 0x1C
+    DWORD AddressOfNames;          // 0x20 => senpai notice me
+    DWORD AddressOfNameOrdinals;   // 0x24
+} IMAGE_EXPORT_DIRECTORY, *PIMAGE_EXPORT_DIRECTORY;
+```
+
+Nên code sau khi được chỉnh sửa để hiểu rõ hơn các biến đang làm gì, nhìn chương trình không bị sai sót.
+
+
+Mình đã thực hiện 2 bước: 
++ Gán lại kiểu cho `rbx_2`: 
+```C
+struct _IMAGE_EXPORT_DIRECTORY* rbx_2;
+```
+(cái này có ở code trên rồi)
++ Chỉnh sửa cú pháp để truy cập bằng tên trường thay vì offset thôi (nếu không thì cực kì dễ ngáo + sai): 
+```C
+1400053cb                    void* rdx_1 = (uint64_t)*(uint32_t*)((uint64_t)rbx_2->AddressOfNames
+1400053cb                        + (NumberOfNames << 2) + DllBase) + DllBase;
+```
+
+Về bản chất thì logic vẫn giống y chang
+Tổng kết lí do đổi tên và kiểu là: 
++ `rbx_2` => `struct _IMAGE_EXPORT_DIRECTORY*`: Gán đúng kiểu làm mình nhìn rõ ràng hơn về offset. 
++ `r10_1` => `DllBase`: Biểu thị rõ ràng base address của DLL (đã giải thích bên trên kĩ hơn).
++ Thay vì dùng offset `0x18` & `0x20` => Dùng thẳng tên trường luôn: `NumberOfNames`, `AddressOfNames`:  dễ đọc, lại còn chuẩn Bill Gates.
+
+
+Code đã được rename:
+```c
+...
+1400053a8                uint64_t NumberOfNames = (uint64_t)rbx_2->NumberOfNames;
+1400053a8                
+1400053af                while (NumberOfNames)
+1400053af                {
+1400053c0                    NumberOfNames = (uint64_t)(NumberOfNames - 1);
+1400053cb                    void* rdx_1 = (uint64_t)*(uint32_t*)((uint64_t)rbx_2->AddressOfNames
+1400053cb                        + (NumberOfNames << 2) + DllBase) + DllBase;
+...
+```
+
+Nãy giờ chỉ giải thích rename thôi, giờ lại vào phần chính, chương trình sẽ lặp lại `NumberOfNames` lần và đọc từ trường `AddressOfNames` trong `_IMAGE_EXPORT_DIRECTORY` với tên hàm xuất tại index cho trước. 
+
+### Hàm hash để tạo ra function name:
+
+Lần tiếp theo code, mình phát hiện một `hash` được tính toán cho tên hiện tại, và kết quả của phép toán được so sánh với một `số random` khác. Phần code này có vẻ như đang duyệt qua các exports của các module đã được nạp vào và kiểm tra xem có một TÊN HÀM NHẤT ĐỊNH hay không. Để tránh so sánh chuỗi (có lẽ là vì obfuscation ), một `hash` nữa được sử dụng để kiểm tra.
+
+```c
+...
+1400053ce                    int32_t r8_1 = 0x9032307c;
+1400053d4                    char i = *(uint8_t*)rdx_1;
+1400053d7                    void* rdx_2 = (char*)rdx_1 + 1;
+1400053d7                    
+1400053dc                    if (i)
+1400053dc                    {
+1400053f6                        do
+1400053f6                        {
+1400053e6                            r8_1 = ((int32_t)i ^ r8_1) * 0x1000193;
+1400053ed                            i = *(uint8_t*)rdx_2;
+1400053f0                            rdx_2 += 1;
+1400053f6                        } while (i);
+1400053f6                        
+1400053ff                        if (r8_1 == 0x1b809b6e)
+1400053ff                        {
+...
+```
+
+Để decode tên hàm, ta chỉ cần sử dụng một bảng các tên hàm khả thi và để script tự tìm tên đúng dựa trên hash và seed (nhưng mình đã quên điều quan trọng nhất: mỗi khối mã hash trong binary có thể khởi tạo một seed riêng.  Mặc dù ở đoạn này seed được gán cố định (`0x9032307c`), ở các vị trí khác seed có thể thay đổi, do đó khi viết script tra ngược tên hàm từ hash, cần cung cấp đúng cặp `hash` + `seed`). 
+
+Mình đã tìm hiểu rất nhiều cách băm (hash) nhanh, 1 trong số đó là [FNV1a](https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_functio).
+
+Script của mình + đc `Claude` sửa: 
+
+
+```py
+from ctypes import c_uint32
+import sys
+
+def hash(value, seed):
+    result = seed
+    for char in value:
+        result = c_uint32((ord(char) ^ result) * 0x1000193).value
+    return result
+
+seed = int(sys.argv[2],16)
+names = open("names", "r").readlines()
+for name in names:
+    if hash(name.strip(), seed) == int(sys.argv[1],16):
+        print(name)
+        break
+```
+
+Chỉ khác `FNV1a` ở chỗ seed khởi tạo của mình có thể thay đổi, còn của thuật toán gốc thì phải cố định, còn lại XOR với kí tự hiện tại hay nhân với `FNV prime` thì y chang thuật toán gốc.
+
+```python 
+(argv[2]) #điểm khác biệt ở chỗ này
+```
+
+Với names là một file đơn giản chứa tất cả các tên hàm, ví dụ:
+
+```bash
+abort
+abs
+acos
+asctime
+asin
+assert
+atan
+atan2
+atexit
+atof
+atoi
+atol
+bsearch
+calloc
+ceil
+...
+```
+Mình ko thể đính kèm file `names` ở đây nhưng mình nghĩ ai chắc cũng sẽ tự tạo được 1 file như vậy cho họ thôi. 
+
+
+Script này dùng để tra ngược tên hàm từ một giá trị `hash` và một `seed` đã biết. Nó lặp qua danh sách các tên hàm khả nghi mà mình đã chuẩn bị trước là `names` và tính hash cho từng cái theo thuật toán trong binary. Khi tìm được tên có hash khớp với giá trị cần tra => in ra hàm đó. 
+
+Khi chạy script này, nó sẽ tìm ra đúng tên hàm, nếu tên đó có trong bảng `names`
+
+```bash
+$ python search_name.py 0x1b809b6e 0x9032307c
+fopen
+```
+
+Tên hàm được chọn ở đây là `fopen`. Trace tiếp theo code của hàm nãy giờ, code sau đó sẽ lấy địa chỉ hàm và gọi hàm này với đối số `arg2` (trước đó là `users.json`) và `var_486` (cái ở đầu bài đã đc đề cập là `rb`).
+
+```c
+...
+14000542b                            int64_t rax_7 = ((uint64_t)*(uint32_t*)(
+14000542b                                (uint64_t)rbx_2->AddressOfFunctions + DllBase + ((uint64_t)
+14000542b                                *(uint16_t*)((uint64_t)rbx_2->AddressOfNameOrdinals
+14000542b                                + DllBase + (NumberOfNames << 1)) << 2)) + DllBase)(arg2, 
+14000542b                                &var_468);
+...
+```
+
+### Tổng kết nãy giờ dc gì: 
+Bài này có 2 kĩ thuật chính để `obfuscation` là XOR để ẩn chuỗi và `hash` để giấu lời gọi hàm. Ta có thể bắt đầu decode từ bây giờ.
+
+Hàm đầu tiên (`sub_1400052d0`) mà ta đã biết là mở tệp `users.json`. Hàm này thực hiện chuỗi các lệnh như sau (call đã bị obfuscated & mình deobfuscate + take notes như bên dưới):
+
+```C
+fp = fopen("users.json", "rb");
+fread(buffer, 1, 1024, fp);
+// tạo vector<char> từ buffer
+fclose(fp);
+```
+
+=> Do đó, có thể đặt tên lại hàm này thành `ReadInpFile` hoặc tên nào mà bạn thích.
+
+Quay lại hàm `main`, mọi thứ trở nên rõ ràng hơn rất nhiều...
+
+```C
+140005a42        int64_t var_c0 = 0x60b7f02f67e80d38;
+140005a58        int64_t var_b8 = 0x66a934904cd0c7c8;
+140005a6e        void* const s_3 = 0xfc49a01158d7e4d;
+140005a87        int64_t var_58 = 0x66a934904cd0c7a6;
+140005a9a        var_c0 ^= s_3;  // kết quả là chuỗi "users.json"
+140005aa7        void* s;
+140005aa7        int64_t* s_4 = ReadInpFile(&s, &var_c0);
+```
+
++ `var_c0` ban đầu là 1 `số không rõ` nhưng  sau đó được XOR với `s_3`, tạo ra chuỗi `users.json`.
++ Hàm `ReadInpFile` sau đó được gọi với tham số là `buffer s` và tên file vừa giải mã được `users.json`.
++ Đây chính là cách chương trình ẩn chuỗi và không lộ tên file/hàm trong binary.
+
+
+Việc ta cần làm bây giờ là duyệt qua tất cả các hàm còn lại :skull: và giải mã chúng theo cách tương tự, cho đến khi tìm thấy những đoạn quan trọng giúp chúng ta giải mã lại file được đính kèm `users.json.enc` => Giải được có flag.
+
+### Anti-debugging: 
+Sau khi đọc file input, chương trình kiểm tra xem có debugger đang hoạt động kh, và nếu phát hiện , nó sẽ gọi tới một hàm có khả năng thoát chương trình hay làm khó dễ việc debug, cụ thể ở đây là hàm `sub_140002ba0`.
+
+```c
+...
+140005baf                        if (r8_1 == 0x81a773bc)  // IsDebuggerPresent
+140005baf                        {
+140005bd2                            if (((uint64_t)*(uint32_t*)(
+140005bd2                                    (uint64_t)*(uint32_t*)((char*)rdi_2 + 0x1c) + r10_1 + (
+140005bd2                                    (uint64_t)*(uint16_t*)(
+140005bd2                                    (uint64_t)*(uint32_t*)((char*)rdi_2 + 0x24) + r10_1
+140005bd2                                    + (r9_1 << 1)) << 2)) + r10_1)())
+140005bd8                                sub_140002ba0();
+...
+```
+
+Tóm tắt = ảnh: 
+![upload_442f78800b3bda42de271cb4cadc96a4](https://hackmd.io/_uploads/B1dfIgGZxx.png)
+
+
+![upload_6f3ac994cab3ca239b4631bde0bb37b4](https://hackmd.io/_uploads/By-N8gzbxl.png)
+
+Trông dễ hiểu hơn chưa nhỉ? Về cơ bản thì code là: 
+
+```C
+if (IsDebuggerPresent()) {
+  sub_140002ba0();
+}
+```
+
+### Lý do sinh ra BSoD:
+
+Trace tiếp `sub_140002ba0` xem?
+![upload_aa7236f08e539b2ce1d2e65670c0afb6](https://hackmd.io/_uploads/HyurUgzbgl.png)
+
+```bash
+$ python search_name.py 0xe1f8d3d -0x3385d04c
+GetModuleHandleA
+```
+![upload_b35434d996d4e117a2c2e1296ac8a312 (1)](https://hackmd.io/_uploads/BkFo8lM-xe.png)
+![upload_ebe20c3befd2107dace76aff4f362b34 (1)](https://hackmd.io/_uploads/r1N38ezbxg.png)
+
+
+Đọc trang [này](https://stackoverflow.com/questions/50996439/can-someone-explain-rtladjustprivilege) và xem video demo [này](https://www.youtube.com/watch?v=s27TVF0RWu4) để hiểu nó là cái gì. 
+![upload_3f6a2cefa0ac37fd981ff681c5d75988](https://hackmd.io/_uploads/rkQAUgfblg.png)
+
+![upload_ef0b30a3dcd6e2ced468f29dd2e4aabd](https://hackmd.io/_uploads/SJ7JDxzZlg.png)
+
+Research tài liệu [này](http://undocumented.ntinternals.net/index.html?page=UserMode%2FUndocumented%20Functions%2FError%2FNtRaiseHardError.html).
+=> Có thể tóm tắt như sau: 
+```
+NtRaiseHardError(
+
+
+
+  IN NTSTATUS             ErrorStatus,
+  IN ULONG                NumberOfParameters,
+  IN PUNICODE_STRING      UnicodeStringParameterMask OPTIONAL,
+  IN PVOID                *Parameters,
+  IN HARDERROR_RESPONSE_OPTION ResponseOption,
+  OUT PHARDERROR_RESPONSE Response );
+```
+```ErrorStatus = 0xc0000420
+NumberOfParameter = 0
+UnicodeStringParameterMask = 0
+Parameters = NULL
+Response = &var_90
+```
+
+NHƯNG thử tra giá trị `0xc0000420` xem thực sự có nghĩa là gì đi đã
+Tra thì ra là `STATUS_ASSERTION_FAILURE`
+
+`Response = &var_90`: & là toán tử lấy địa chỉ. Vì vậy, &var_90 sẽ trả về địa chỉ của vùng nhớ được đặt tên là var_90.
+![upload_b7901f651ccb7016e33760c4828901b9](https://hackmd.io/_uploads/SkKePxGbll.png)
+=> `ResponseOption` = 6
+
+Research tiếp, tìm được cái này: 
+![upload_23457932c3359560a76fbec7272ff864](https://hackmd.io/_uploads/HyjWweGblx.png)
+6 => `OptionShutdownSystem` 
+Vậy hệ thống sẽ tắt nguồn ngay lập tức
+
+Thế tổng kết nó sẽ là `NtRaiseHardError(STATUS_ASSERTION_FAILURE, 0, 0, NULL, OptionShutdownSystem, &response);`
+
+Vậy là hàm `sub_140002ba0` thực hiện API call tới `NtRaiseHardError` với các tham số sau:
+
++ `ErrorStatus` = 0xc0000420
+
++ `NumberOfParameters` = 0
+
++ `UnicodeStringParameterMask` = 0
+
++ `Parameters` = 0
+
++ `ResponseOption` = OptionShutdownSystem
+
++ `Response` = &response
+
+Lệnh này gây ra lỗi hệ thống khá căng với mã lỗi là `0xc0000420` => gây BSOD. 
+
+### Mã hoá bằng AES CBC (Từ đoạn này sẽ 0 giải thích nhiều nữa, có thể đọc link đính kèm): 
+Hàm tiếp theo được gọi là `sub_140001950`. Deobfuscate tương tự những phần trước, deobfuscate strings, deobfuscate mấy cái call tới hàm. Bằng cách này mình đã tìm đc 1 số 'call thú vị' (Đơn giản chỉ cần quăng cho `Cursor Student` để nó lọc những phần không đáng qtam tới => 0 đc đưa vào code, tất cả phần duyệt export table đều có logic giống nhau. Mình quan tâm đến tên hàm được gọi và các tham số mà nó nhận mà thôi).
+
+```c
+...
+140001a1a        zmm0 = var_160;
+140001a1f        zmm0 ^= rax_4;  // advapi32
+140001a26        var_160 = zmm0;
+...
+140001aad                        if (rdx_4 == 0xa6b3508e)  // LoadLibraryA
+140001aad                        {
+140001ad6                            int64_t rax_10 = ((uint64_t)*(uint32_t*)(
+140001ad6                                (uint64_t)*(uint32_t*)((char*)r11_2 + 0x1c) + r10_1 + ((
+140001ad6                                uint64_t)*(uint16_t*)(
+140001ad6                                (uint64_t)*(uint32_t*)((char*)r11_2 + 0x24) + r10_1
+140001ad6                                + (r9_1 << 1)) << 2)) + r10_1)(&var_160);
+140001af3                            int64_t var_a0;
+140001af3                            __builtin_memcpy(&var_a0, 
+140001af3                                "\x0e\x0c\xf4\x65\x75\xdb\xa7\x7e\xd3\xae\xa2\x29\xd3\x5b\xc7\x12\xe2\x6f\x8f\xac\x7f\xb6\x91\xce\x28\xf1\x38\x56\xae\x8c\x0d\x8c\x4d\x7e\x8d\x15\x01\x9a\xc4\x0f\xa6\xc7\xd0\x4c\x90\x34\xa9\x66\x87\x17\xfb\xed\x7f\xb6\x91\xce\x28\xf1\x38\x56\xae\x8c\x0d\x8c", 
+140001af3                                0x40);
+140001bcf                            int64_t var_80;
+140001bcf                            var_a0 ^= var_80; // CryptAcquireContextA
+...
+140001c5d                                            // GetProcAddress
+140001c5d                                            if (rdx_8 == 0xcd948407)
+140001c5d                                            {
+140001ca5                                                int32_t rax_16 = ((uint64_t)*(uint32_t*)((
+140001ca5                                                    uint64_t)*(uint32_t*)((char*)r11_4 + 0x1c)
+140001ca5                                                    + r10_2 + ((uint64_t)*(uint16_t*)((
+140001ca5                                                    uint64_t)
+140001ca5                                                    *(uint32_t*)((char*)r11_4 + 0x24)
+140001ca5                                                    + r10_2 + (r9_2 << 1)) << 2)) + r10_2)(
+140001ca5                                                    rax_10, &var_a0)(&var_110, 0, 0, 0x18, 
+140001ca5                                                    0xf0000000);
+... 
+```
+
+Phân tích code 1 chút: 
+Tự load các hàm crypto từ thư viện `advapi32.dll` bằng cách:
++ Tự resolve `LoadLibraryA` → Load `advapi32.dll`
++ Resolve `GetProcAddress` → Lấy địa chỉ của `CryptAcquireContextA`,...
+
+```
+BOOL CryptAcquireContextA(
+  HCRYPTPROV *phProv,     // Con trỏ nhận handle (HCRYPTPROV) dùng trong các hàm mã hóa tiếp theo
+  LPCSTR     pszContainer, // Tên container để lưu key. Có thể là NULL nếu không cần lưu key lâu dài
+  LPCSTR     pszProvider,  // Tên provider, có thể NULL để dùng mặc định
+  DWORD      dwProvType,   // Loại provider. Phổ biến nhất là PROV_RSA_AES (24)
+  DWORD      dwFlags       // Flag để chỉ cách xử lý: tạo mới container, chỉ truy xuất,...
+);
+```
+
++ Gọi các hàm crypto đã lấy được (mở Binja lên đọc thì mình nghĩ mọi người đều biết các hàm đó là gì).
+
+Mình đã để comment đầy đủ trên code. Có thể đọc comment để hiểu
+
+Flow chính:
+
+```c
+CryptAcquireContextA(&hCryptProv, NULL, NULL, PROV_RSA_AES, CRYPT_VERIFYCONTEXT)
+CryptImportKey(hCryptProv, KeyData, sizeof(KeyData), NULL, 0, &hCryptKey)
+CryptSetKeyParam(hCryptKey, KP_MODE, (const BYTE*)&cipherMode, 0)
+CryptSetKeyParam(hCryptKey, KP_IV, IVData, 0)
+CryptEncrypt(hCryptKey, NULL, TRUE, 0, Buffer, &BufferLength, BufferLength)
+...
+```
+
++ Cái đầu thì note bên trên rồi
++ [CryptImportKey](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptimportkey), [CryptSetKeyParam](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptsetkeyparam), [CryptEncrypt](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptencrypt)
+Vì sao `CryptSetKeyParam` được gọi 2 lần á? Vì hàm này được dùng để thiết lập các thông số khác nhau của key mã hóa, và trong trường hợp này, chương trình đang thiết lập hai thông số riêng biệt: đó là `KP_MODE` tức chế độ mã hóa (trong bài này là CBC tức `cipherMode` là 1) và `Vector khởi tạo (IV)` đc dùng trong chế độ như CBC để đảm bảo an toàn (`IVData` là `IV` đã lấy từ `sub_1400016a0` vì sao thì hồi sau sẽ rõ).
+
+#### Ahh crypto's things momment....
+
+Lúc này ta cơ bản biết rằng tệp này được mã hóa bằng `AES CBC`. Vì sao? `AES CBC` là chế độ mã hóa mà trong đó mỗi khối văn bản đã mã hóa phụ thuộc vào khối trước đó thông qua phép XOR (trùng với cách obfuscation + theo flow trên phân tích, việc sử dụng các hàm như `CryptSetKeyParam` để thiết lập IV và các tham số khác, cộng với việc mã hóa sử dụng hàm `CryptEncrypt`, cho thấy chắc chắn nó phải là `AES CBC`). Cơ mà muốn decode thì ta còn thiếu 2 cái cực kì quan trọng, Đó là `khóa` và `vector khởi tạo (IV)`.
+
+Khóa được nhập vào bằng cách gọi hàm `CryptImportKey` và truyền dữ liệu khóa thông qua [PUBLICKEYSTRUC](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/ns-wincrypt-publickeystruc) vào hàm này. Dữ liệu được cung cấp bởi `var_d8`.
+
+Vì sao mình biết `CryptImportKey` đang nhận một `PUBLICKEYSTRUC` (hay đúng hơn là  [PLAINTEXTKEYBLOB](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/ns-wincrypt-publickeystruc)), dù trong mã không hề ghi tên struct.
+
+Xét cấu trúc của `CryptImportKey` trước: 
+```
+BOOL CryptImportKey(
+  HCRYPTPROV  hProv,
+  const BYTE *pbData,   // chỗ này chứa key + header nè
+  DWORD       dwDataLen,
+  HCRYPTKEY   hPubKey,
+  DWORD       dwFlags,
+  HCRYPTKEY   *phKey
+);
+```
+
+Trong đó `pbDat` trỏ đến một buffer mà bắt buộc phải bắt đầu bằng một `PUBLICKEYSTRUC`. 
+
+Nếu mà ta truyền key `raw` thì kiểu dữ liệu đc dùng là [PLAINTEXTKEYBLOB](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/ns-wincrypt-publickeystruc).
+
+Xem đoạn này đi: 
+
+```c
+...
+140001d0b    int32_t var_d8 = 0x208;
+140001d17    int32_t var_d4_1 = 0x660e;
+140001d21    int32_t var_d0_1 = 0x10;
+...
+```
+
++ `var_d8` = 0x208 => 0x08 = `PLAINTEXTKEYBLOB`, 0x02 = `version`: chuẩn với PUBLICKEYSTRUC
++ `var_d4_1` = 0x660e, tức là `AES-128`
++ `var_d0_1` = 0x10, 16 bytes = độ dài key AES-128
+
+Không phải vì biến tên `var_d8` hay `var_d4_1` mà biết, mà vì:
++ Giá trị nó khớp với sách giáo khoa.
++ `Windows Crypto API` bắt buộc `pbData` phải bắt đầu bằng `PUBLICKEYSTRUC` khi gọi `CryptImportKey` (Đọc ở [đây](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptimportkey))
+
+Xét tiếp đoạn trên, ta thấy, `int32_t` là 4 bytes, `x208` ở d8 sẽ chuyển thành `08 02 00 00` để khớp với 4 byte này theo `little endian`
+Tương tự thì ta có `0e 66 00 00`, `10 00 00 00`
+
+Chà, có vẻ Binary Ninja đang cố gắng hiển thị buffer với các giá trị:
+`\x08\x02\x00\x00\x0e\x66\x00\x00\x10\x00\x00\x00`. Chắc chắn là `BLOBHEADER` vì sao? Tương ứng ta có: 
++ `08`: bType = PLAINTEXTKEYBLOB (0x08)
++ `02`: bVersion = 2
++ `0e 66`: aiKeyAlg = 0x660e = `CALG_AES_128`
++ `10 00 00 00`: 16 bytes key
+
+Do kiểu dữ liệu là `PLAINTEXTKEYBLOB`, sau phần tiêu đề `BLOBHEADER` là 4 byte thể hiện độ dài khóa, và sau đó là một mảng chứa giá trị khóa.
+
+Check stack layout, ta nhận thấy các giá trị này được lưu trữ từ địa chỉ `rbp+0x88` đến `rbp+0x90`, xuống dưới 1 chút thì có một lời gọi hàm `memcpy` sao chép đối số đầu tiên của hàm vào vị trí `rbp+0x94` – ngay sau phần `BLOBHEADER`. Do đó, phần còn lại của dữ liệu tại đây chính là khóa AES.
+
+
+
+```c
+...
+140001dad              // memcpy
+140001dad              if (rdx_15 == 0x42a67421)
+140001dad                  break;
+140001d8c          }
+140001d8c          
+140001db2          if (!r9_3)
+140001db2              goto label_140001db4;
+140001d70      }
+140001d70      
+140001de2      void var_cc; // located rbp+0x94
+140001de2      ((uint64_t)*(uint32_t*)((uint64_t)
+140001de2          *(uint32_t*)((char*)r11_6 + 0x1c) + r10_3
+140001de2          + ((uint64_t)*(uint16_t*)((uint64_t)
+140001de2          *(uint32_t*)((char*)r11_6 + 0x24)
+140001de2          + r10_3 + (r9_3 << 1)) << 2)) + r10_3)(
+140001de2          &var_cc, *(uint64_t*)arg1, 0x10);
+...
+```
+
+Quay lại hàm `main`, ta thấy lời gọi hàm:
+```C
+EncryptBuffer(&var_80, &s, &s_3);
+```
+Đối số đầu tiên `&var_80` thực chất được khởi tạo thông qua một lời gọi hàm trước đó trong main:
+```C
+sub_1400016a0(&var_80);
+```
+
+```c
+1400016a0    int64_t* sub_1400016a0(int64_t* arg1)
+
+1400016a0    {
+1400016a0        void var_c8;
+1400016c5        int64_t rax_1 = __security_cookie ^ &var_c8;
+1400016d4        char* r14 = &data_14000a750;
+1400016d4        
+1400016ef        if (data_14000a768 > 0xf)
+1400016ef            r14 = (*(uint64_t*)data_14000a750);
+1400016ef        
+14000170c        int64_t var_80;
+14000170c        __builtin_memcpy(&var_80, 
+14000170c            "\xaa\x8f\xfd\x9d\x29\x64\x46\x9c\x64\x20\x6b\xec\x22\xef\x75\x73\x87\x17\xfb\xed\x7f\xb6\x91\xce\x28\xf1\x38\x56\xae\x8c\x0d\x8c\x4d\x7e\x8d\x15\x01\x9a\xc4\x0f\xa6\xc7\xd0\x4c\x90\x34\xa9\x66\x87\x17\xfb\xed\x7f\xb6\x91\xce\x28\xf1\x38\x56\xae\x8c\x0d\x8c", 
+14000170c            0x40);
+140001791        int64_t var_60;
+140001791        var_80 ^= var_60;
+...
+14000182e                        if (rdx_2 == 0x4223c4f5)  // memcpy
+14000182e                        {
+140001861                            ((uint64_t)*(uint32_t*)(
+140001861                                (uint64_t)*(uint32_t*)((char*)r11_2 + 0x1c) + r10_1 + ((
+140001861                                uint64_t)*(uint16_t*)(
+140001861                                (uint64_t)*(uint32_t*)((char*)r11_2 + 0x24) + r10_1
+140001861                                + (r9_1 << 1)) << 2)) + r10_1)(*(uint64_t*)arg1, &var_80, 
+140001861                                0x10);
+...
+1400018f0                                            if (r8_5 == 0xb05ec763)
+1400018f0                                            {
+140001926                                                ((uint64_t)*(uint32_t*)((uint64_t)
+140001926                                                    *(uint32_t*)((char*)rdi_2 + 0x1c) + rbx_2
+140001926                                                    + ((uint64_t)*(uint16_t*)((uint64_t)
+140001926                                                    *(uint32_t*)((char*)rdi_2 + 0x24)
+140001926                                                    + rbx_2 + ((uint64_t)r9_2 << 1)) << 2))
+140001926                                                    + rbx_2)(arg1[1], r14, 0x10);
+...
+```
+
+
+Hàm này sao chép hai chuỗi vào mảng được truyền làm tham số cho hàm. Đầu tiên là 16 byte của một mảng byte đã bị XOR obfuscation và sau đó là một số dữ liệu đến từ một biến toàn cục. Mục đầu tiên của mảng là IV, vì vậy chúng ta tiến hành giải mã chuỗi đó và xác định IV là: `e7 f1 70 88 28 fe 82 93 c2 e7 bb a0 b2 db dc 15`
+
+Phần còn thiếu còn lại là `key`, nó được đọc từ phần tử thứ hai của mảng `arg1` trong hàm encrypt. Do đó, dữ liệu này chắc chắn nằm trong một biến toàn cục. Khi kiểm tra các code tham chiếu của `data_14000a750`, ta thấy rằng hàm `sub_1400042d0` đã gán dữ liệu cho biến này.
+
+Đáng chú ý nhất là hàm `sub_1400042d0` lấy ComputerName bằng cách gọi GetComputerName và tính hash `SHA256` cho tên đó.
+
+`Hash` này được so sánh với một giá trị hash đã được mã hóa. Ta có thể dump code và rồi deobfuscate bằng script. 
+
+```C
+#include <stdint.h>
+#include <string.h>
+
+void foo(uint8_t* output) {
+    uint64_t D1[10] = {
+        0x0f14bfcb3b5395c0,
+        0x7598edafbc6813d2,
+        0xa3a8570e569c0b5b,
+        0x78f7c6b13432ce03,
+        0x3137359115416fee,
+        0x25627df6f75efab5,
+        0x5cc00aae4386bc25,
+        0x8201b67fff8c5912,
+        0xc7834c0629c7f55f,
+        0xcdca4dd7e40b2e18
+    };
+
+    uint64_t D2[10] = {
+        0x692387ae5860a7f7,
+        0x11a08e9f8a5d26b0,
+        0xc7c9316835ac6e69,
+        0x4895a5890d03ac32,
+        0x015150f273775ddb,
+        0x465b4dc39569c8d4,
+        0x68f16fcc70b4d91d,
+        0xb431831dcfe96a76,
+        0xc7834c0629c7f55f,
+        0xcdca4dd7e40b2e18
+    };
+
+    for (int i = 0; i < 10; i++) {
+        uint64_t result = D1[i] ^ D2[i];
+        memcpy(output + i * sizeof(uint64_t), &result, sizeof(uint64_t));
+    }
+}
+```
+
+`D1` & `D2` là 2 mảng dữ liệu tĩnh có sẵn, đơn giản chỉ là duyệt qua từng cặp phần tử `D1[i]` và `D2[i]` rồi XOR thôi.
+
+=> Chạy thu được hash này: `723ce87fb5560c8d2e0cffad1b198cb0526fcef0a27b509c8e23be14d3e0b506`
+
+![image](https://hackmd.io/_uploads/ByozZXM-gx.png)
+
+Nếu các giá trị hash không khớp (chương trình được chạy trên một máy có name không khớp với hash này) => shut down
+
+![image](https://hackmd.io/_uploads/HJ6oZQG-lg.png)
+Nếu hash giống nhau thì `data_14000a750` sẽ được gán bằng `Computer Name`.
+
+Quay lại hàm `sub_1400016a0` (hàm trả về cả IV và key), chúng ta thấy rằng key được tạo ra từ `Computer Name` và được pad tới độ dài 16 byte bằng cách gán thêm các byte có giá trị `0xa0` vào.
+
+Vì vậy, `key` mà chúng ta tìm được sẽ là: `50 45 54 45 52 a0 a0 a0 a0 a0 a0 a0 a0 a0 a0 a0.`
+
+
+
+
+Với việc đã có đầy đủ `khóa mã hóa` và `vector khởi tạo`, ta hoàn toàn có thể tiến hành giải mã dữ liệu, xài các tools online như `Cyberchef` cũng được, script của mình: 
+
+```py
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+
+key = b"\x50\x45\x54\x45\x52\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0"
+iv = b"\xe7\xf1\x70\x88\x28\xfe\x82\x93\xc2\xe7\xbb\xa0\xb2\xdb\xdc\x15"
+ciphertext = open("user.json.enc", "rb").read()
+
+cipher = AES.new(key, AES.MODE_CBC, iv)
+
+
+try:
+    plaintext = unpad(cipher.decrypt(ciphertext), AES.block_size)
+    print(plaintext.decode())
+except ValueError as e:
+    print("Decryption failed:", str(e))
+```
+
+
+```json
+[
+    {
+      "username": "clowncs",
+      "password": "sadboi2k5kekeke",
+      "flag": "FLAG{easy_peasy_lemon_squeezy}"
+    },
+    {
+      "username": "robbert1978",
+      "password": "shirokoshirkos",
+      "flag": "FLAG{nnnnnnnnnnnnnnnnnnnnnnnnn}"
+    },
+    {
+      "username": "Shin24",
+      "password": "moimoimoimoimoimoimoi",
+      "flag": "FLAG{etouuuuuuuuuuuuuuuuuuuuuu}"
+    },
+    {
+      "username": "tr4c3d4tr4il",
+      "password": "toiiukembanh!!!!!!!!!!!!!!!",
+      "flag": "FLAG{toiiukembanh!!!!!!!!!!!!!}"
+    },
+    {
+      "username": "d0qbu",
+      "password": "gaugaugaugaguaguagaugau",
+      "flag": "FLAG{tui_la_chon_cua_doi}"
+    },
+    {
+      "username": "Yuu",
+      "password": "alimegirl:333333",
+      "flag": "FLAG{toi_la_boi_anime}"
+    },
+    {
+      "username": "Jalink",
+      "password": "36quetoi",
+      "flag": "FLAG{ecujalinkknekkkkkk}"
+    },
+    {
+      "username": "tvdat2004",
+      "password": "cryptoooooooooooooooooo",
+      "flag": "FLAG{cryptoooooooooooooooooo_kekekekekeke}"
+    },
+    {
+      "username": "Giapppppppp",
+      "password": "rooooooooooooooooooooooytooci",
+      "flag": "FLAG{gehkekekkekekebehehhehehehehheheheh}"
+    },
+    {
+      "username": "W1",
+      "password": "W1_flag",
+      "flag": "W1{simple_technique_but_it_works_well_b4915726}"
+    }
+]
+  ```
+
+
+
+
+Trong quá trình giải bài này, anh little timmy đã cho mình rất nhiều gợi ý đáng dùng, mình đã follow từ câu đầu tiên mà anh ấy nhắn mà mình trích bên trên, xin cảm ơn anh rất nhiều!
+![image](https://hackmd.io/_uploads/SkI8qWfWle.png)
+
+
+
+
+
+
+
+
+
