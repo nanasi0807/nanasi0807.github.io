@@ -2,11 +2,7 @@
 import Breadcrumbs from '@/components/breadcrumbs.astro'
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
-import ProjectCard from '@/components/project-card.astro'
 import Layout from '@/layouts/layout.astro'
-import { getAllProjects } from '@/lib/data-utils'
-
-const projects = await getAllProjects()
 ---
 
 <Layout class="max-w-3xl">
@@ -20,27 +16,25 @@ const projects = await getAllProjects()
           I'm n4n4s1, a student from University of Information Technology (VNU-UIT). I won't call myself a Reverse Engineer, 'cause I still suck at this.
         </p>
         <p>
-          Been playing CTFs/Wargame challenges since November 2024. Currently, I'm highly focused on Android and kernel reversing.
+          Been playing CTFs/Wargame challenges since November 2024. Currently, I'm highly focused on Android and kernel reversing. I also play CTFs with my teams: <Link href="https://ctftime.org/team/280950/" external underline class="text-foreground font-medium">V1t</Link> and <Link href="https://ctftime.org/team/28797" external underline class="text-foreground font-medium">PwnSec</Link>.
         </p>
         <p>
           You can reach me on Discord: <span class="font-medium text-foreground">dr34mch4s3r</span>
         </p>
       </div>
 
-      {/* <h2 class="mb-4 text-2xl font-medium">Example Projects Listing</h2>
-      <div class="flex flex-col gap-4 mb-8">
-        {projects.map((project) => <ProjectCard project={project} />)}
-      </div>
-      */}
-
-      <h2 class="mb-4 text-2xl font-medium">Vibes</h2>
+      <h2 class="mb-4 text-2xl font-medium text-foreground">My playlist</h2>
+      <p class="mb-4 text-muted-foreground">
+        my hobby is really simple, just listening to music, here's my playlist if u love to check
+      </p>
+      
       <div class="mt-4">
         <iframe 
           style="border-radius:12px" 
-          src="https://open.spotify.com/playlist/2FZJoB35XnCGw15G5Kbzfq?si=fcaa1538ef1d41ba" 
+          src="https://open.spotify.com/playlist/2FZJoB35XnCGw15G5Kbzfq?si=8816a71f1c6b49ed" 
           width="100%" 
           height="352" 
-          frameBorder="0" 
+          frameborder="0" 
           allowfullscreen="" 
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
           loading="lazy">
