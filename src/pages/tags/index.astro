@@ -2,10 +2,10 @@
 import Breadcrumbs from '@/components/breadcrumbs.astro'
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
-import { badgeVariants } from '@/components/ui/badge'
 import Layout from '@/layouts/layout.astro'
 import { getSortedTags } from '@/lib/data-utils'
 import { Icon } from 'astro-icon/components'
+import { getTagStyle } from '@/consts'   // 👈 thêm dòng này
 
 const sortedTags = await getSortedTags()
 ---
@@ -15,16 +15,16 @@ const sortedTags = await getSortedTags()
   <Breadcrumbs items={[{ label: 'Tags', icon: 'lucide:tags' }]} />
 
   <div class="flex flex-col gap-4">
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-3">  {/* 👈 tăng gap cho đẹp */}
       {
         sortedTags.map(({ tag, count }) => (
           <Link
             href={`/tags/${tag}`}
-            class={badgeVariants({ variant: 'muted' })}
+            class={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 ${getTagStyle(tag)}`}
           >
-            <Icon name="lucide:hash" class="size-3" />
-            {tag}
-            <span class="text-muted-foreground ml-1.5">({count})</span>
+            <Icon name="lucide:hash" class="size-3 opacity-70" />
+            <span>{tag}</span>
+            <span class="text-xs opacity-60">({count})</span>
           </Link>
         ))
       }

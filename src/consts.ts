@@ -15,7 +15,7 @@ export type Link = {
 
 export const SITE: Site = {
   title: 'Nanasi',
-  description: 'CTF Write-ups, Reverse Engineering, and life.',
+  description: 'CTF write-ups, reverse engineering, and life.',
   href: 'https://nanasi0807.github.io',
   locale: 'en-US',
   author: 'Nanasi',
@@ -52,3 +52,23 @@ export const ICON_MAP: Record<string, string> = {
   website: 'lucide:globe',
   Website: 'lucide:globe',
 };
+
+export const TAG_STYLES: Record<string, string> = {
+  reverse:
+    'bg-purple-500/10 text-purple-300 ring-1 ring-purple-500/30 shadow-[0_0_12px_rgba(168,85,247,0.18)] hover:bg-purple-500/20 hover:text-purple-200',
+  writeup:
+    'bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.18)] hover:bg-emerald-500/20 hover:text-emerald-200',
+  vietnamese:
+    'bg-rose-500/10 text-rose-300 ring-1 ring-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.18)] hover:bg-rose-500/20 hover:text-rose-200',
+  clickbait:
+    'bg-amber-500/10 text-amber-300 ring-1 ring-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.18)] hover:bg-amber-500/20 hover:text-amber-200',
+  english:
+    'bg-sky-500/10 text-sky-300 ring-1 ring-sky-500/30 shadow-[0_0_12px_rgba(14,165,233,0.18)] hover:bg-sky-500/20 hover:text-sky-200',
+};
+
+export function getTagStyle(tag: string): string {
+  return (
+    TAG_STYLES[tag.toLowerCase()] ??
+    'bg-zinc-500/10 text-zinc-300 ring-1 ring-zinc-500/30 hover:bg-zinc-500/20 hover:text-zinc-200'
+  );
+}
