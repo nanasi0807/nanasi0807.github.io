@@ -15,32 +15,36 @@ const projects = await getAllProjects()
 
   <section>
     <div class="min-w-full">
-      <div class="prose mb-8">
+      <div class="prose mb-8 text-muted-foreground">
         <p class="mt-0">
-          astro-erudite is an opinionated, unstyled static blogging template
-          that prioritizes simplicity and performance, built with <Link
-            href="https://astro.build"
-            external
-            underline>Astro</Link
-          >, <Link href="https://tailwindcss.com" external underline
-            >Tailwind</Link
-          >, and <Link href="https://ui.shadcn.com" external underline
-            >shadcn/ui</Link
-          >. It provides a clean foundation for your content while being
-          extremely easy to customize.
+          I'm n4n4s1, a student from University of Information Technology (VNU-UIT). I won't call myself a Reverse Engineer, 'cause I still suck at this.
         </p>
         <p>
-          To learn more about the philosophy behind this template, check out the
-          following blog post: <Link
-            href="/blog/the-state-of-static-blogs"
-            underline>The State of Static Blogs in 2024</Link
-          >.
+          Been playing CTFs/Wargame challenges since November 2024. Currently, I'm highly focused on Android and kernel reversing.
+        </p>
+        <p>
+          You can reach me on Discord: <span class="font-medium text-foreground">dr34mch4s3r</span>
         </p>
       </div>
 
-      <h2 class="mb-4 text-2xl font-medium">Example Projects Listing</h2>
-      <div class="flex flex-col gap-4">
+      {/* <h2 class="mb-4 text-2xl font-medium">Example Projects Listing</h2>
+      <div class="flex flex-col gap-4 mb-8">
         {projects.map((project) => <ProjectCard project={project} />)}
+      </div>
+      */}
+
+      <h2 class="mb-4 text-2xl font-medium">Vibes</h2>
+      <div class="mt-4">
+        <iframe 
+          style="border-radius:12px" 
+          src="https://open.spotify.com/playlist/2FZJoB35XnCGw15G5Kbzfq?si=fcaa1538ef1d41ba" 
+          width="100%" 
+          height="352" 
+          frameBorder="0" 
+          allowfullscreen="" 
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+          loading="lazy">
+        </iframe>
       </div>
     </div>
   </section>
