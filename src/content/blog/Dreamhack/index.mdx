@@ -1,0 +1,61 @@
+---
+title: "M - Dreamhack Invitational Quals 2026"
+description: 'A short writeup about M challenge from Dreamhack.'
+date: 2026/04/05
+tags: ['writeup', 'reverse', 'clickbait']
+authors: ['nanasi']
+---
+
+
+
+# How did i solve `M` challenge from Dreamhack?
+![image](https://hackmd.io/_uploads/rkr63yZnZl.png)
+
+So here is the writeup about this: 
+‎ ‎ ‎ ‎ ‎ ‎ ‎ 
+‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+‎ 
+
+U got [clickbait](https://en.wikipedia.org/wiki/Clickbait). LOL ㅋㅋㅋㅋㅋㅋㅋ.
+
+Just kidding, due to Dreamhack Wargame's Rules, i cant share the writeup publicly. But here's my overall approach for this challenge: 
+
+ - The provided executable is highly unconventional, relying heavily on a manipulated set of `Elf64_Rela` relocation entries. If an analyst takes the standard approach and restricts their analysis and parsing purely to the code residing within the `.text` section, they will fall into a deliberate trap. This superficial static analysis will yield the string `DH{FAKE_FLAG}`. However, this is nothing more than a decoy answer designed to mislead the reverse engineer; any attempt to use it will simply result in a `Wrong!` output message.
+
+- The true core of the challenge operates entirely outside the normal execution flow. By deliberately abusing the standard `ELF relocation process`, it is possible to acquire highly privileged execution capabilities long before the program's main entry point is ever reached. Specifically, during the run-time dynamic linker (`rtld`) stage, this manipulation grants both an Arbitrary Address Write (`AAW`) primitive and an Arbitrary Address Call primitive.
+
+- Armed with these two primitives, I was able to construct and implement a fully functioning, Turing-complete machine that executes entirely at load time. Achieving this required actively exploiting the dynamic linker (`ld.so`) itself. Consequently, the massive block of Elf64_Rela entries found in the binary are not standard linking instructions at all; they act as a sophisticated payload of exploit code targeting ld.so. It is during the execution of this weaponized load-time code that the actual, hidden flag-checking logic is evaluated.
+
+- Finally, a critical note regarding the extraction methodology: if you attempted to extract the underlying binary using purely static techniques, it is highly likely you pulled the wrong file. This is because the main binary's malicious `RELA` entries are actively patching other secondary binaries that are embedded directly within global variables. Because this patching process alters the executable in memory, you absolutely must extract the binary dynamically to ensure you are analyzing the fully modified, correct version.
+
+My advice: 
+ - Dont trust what u see in your IDA Pro/Ghidra/Binja 
+ - `rela.p` maybe is a good place u need to focus on. :eyes:
+ - Use ur mind correctly.
+
+That's it, ty for reading this nonsense blog.
