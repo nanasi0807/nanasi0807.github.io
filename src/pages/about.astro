@@ -13,32 +13,56 @@ import Layout from '@/layouts/layout.astro'
     <div class="min-w-full">
       <div class="prose mb-8 text-muted-foreground">
         <p class="mt-0">
-          I'm n4n4s1, a student from University of Information Technology (VNU-UIT). I won't call myself a Reverse Engineer, 'cause I still suck at this.
+          I'm n4n4s1, a student at the University of Information Technology (VNU-UIT).
+          I wouldn't call myself a reverse engineer yet, because I still have a lot to learn.
         </p>
+
         <p>
-          Been playing CTFs/Wargame challenges since November 2024. Currently, I'm highly focused on Android and kernel reversing. I also play CTFs with my teams: <Link href="https://ctftime.org/team/280950/" external underline class="text-foreground font-medium">V1t</Link> and <Link href="https://ctftime.org/team/28797" external underline class="text-foreground font-medium">PwnSec</Link>.
+          I've been playing CTFs and wargame challenges since November 2024.
+          Right now, I'm mainly focused on Android and kernel reversing.
+          I also play CTFs with my teams:
+          <Link
+            href="https://ctftime.org/team/280950/"
+            external
+            underline
+            class="text-foreground font-medium"
+          >
+            V1t
+          </Link>
+          and
+          <Link
+            href="https://ctftime.org/team/28797"
+            external
+            underline
+            class="text-foreground font-medium"
+          >
+            PwnSec
+          </Link>.
         </p>
+
         <p>
-          You can reach me on Discord: <span class="font-medium text-foreground">dr34mch4s3r</span>
+          You can reach me on Discord:
+          <span class="font-medium text-foreground">dr34mch4s3r</span>
         </p>
       </div>
 
       <h2 class="mb-4 text-2xl font-medium text-foreground">My playlist</h2>
       <p class="mb-4 text-muted-foreground">
-        My hobby is really simple, just listening to music, here's my playlist if u love to check
+        My hobby is pretty simple: I just enjoy listening to music. Here's my playlist if you'd like to check it out.
       </p>
-      
-      <div class="mt-4">
-        <iframe 
-          style="border-radius:12px" 
-          src="https://open.spotify.com/playlist/2FZJoB35XnCGw15G5Kbzfq?si=39e8085243b348c5" 
-          width="100%" 
-          height="352" 
-          frameborder="0" 
-          allowfullscreen="" 
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-          loading="lazy">
-        </iframe>
+
+      <div class="mt-4 overflow-hidden rounded-xl">
+        <iframe
+          data-testid="embed-iframe"
+          style="border-radius:12px"
+          src="https://open.spotify.com/embed/playlist/2FZJoB35XnCGw15G5Kbzfq?utm_source=generator"
+          width="100%"
+          height="352"
+          frameborder="0"
+          allowfullscreen
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+        ></iframe>
       </div>
     </div>
   </section>
